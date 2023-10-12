@@ -19,7 +19,7 @@ import {
 
 import { useSignIn } from "react-auth-kit";
 import { useFormik } from "formik";
-import axios, { AxiosError } from "axios";
+import axios, { AxiosRequestConfig, AxiosPromise, AxiosResponse, AxiosError } from 'axios';
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 

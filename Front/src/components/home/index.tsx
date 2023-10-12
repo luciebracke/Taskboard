@@ -4,6 +4,7 @@ import { HeadingXXLarge } from "baseui/typography";
 import { useSignOut } from "react-auth-kit";
 import { useNavigate } from "react-router-dom";
 import { Container } from "../commons";
+import KabanBoard from "../dashboard/KabanBoard";
 
 function Home() {
   const singOut = useSignOut();
@@ -22,15 +23,17 @@ function Home() {
   };
 
   return (
-    <Container>
-      <HeadingXXLarge color="secondary500">Welcome Home Bud!</HeadingXXLarge>
-      <Button kind="secondary" onClick={getPayment}>
-        Get Payment
-      </Button>
-      <Button kind="secondary" onClick={logout}>
+
+    <Container> <Button kind="secondary" onClick={logout}>
         Logout
       </Button>
+      <HeadingXXLarge color="secondary500">Welcome !</HeadingXXLarge>
+      {/* <Button kind="secondary" onClick={getPayment}>
+        Get Payment
+      </Button>  */}<KabanBoard/>
+     
     </Container>
+   
   );
 }
 
