@@ -131,7 +131,7 @@ function ColumnContainer({
             <input
               className="bg-black focus:border-rose-500 border rounded outline-none px-2"
               value={column.title}
-              onChange={(e) => updateColumn(column.id, e.target.value)}
+             // onChange={(e) => updateColumn(column.id, e.target.value)}
               autoFocus
               onBlur={() => {
                 setEditMode(false);
