@@ -1,11 +1,9 @@
 const express = require('express');
-const swaggerUI = require('swagger-ui-express');
 
 const morgan = require('morgan');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const bodyParser = require('body-parser');
-const path = require('path');
 
 let corsOptions = {
     origin: 'http://localhost:3000',
