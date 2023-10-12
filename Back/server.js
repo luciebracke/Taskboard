@@ -1,6 +1,5 @@
 const express = require('express');
 
-const morgan = require('morgan');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const bodyParser = require('body-parser');
@@ -12,10 +11,6 @@ let corsOptions = {
 connectDB();
 
 const app = express();
-
-if(process.env.NODE_ENV === 'development'){
-    app.use(morgan('dev'));
-}
 
 const port = process.env.PORT || 3000;
 
