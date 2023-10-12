@@ -1,5 +1,4 @@
 const express = require('express');
-const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUI = require('swagger-ui-express');
 
 const morgan = require('morgan');
@@ -31,12 +30,6 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json({limit: '50mb', extended: true, type: 'application/json'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}))
 app.use(bodyParser.text({limit: '50mb'}))
-
-app.use('/images', express.static(path.join(__dirname, 'images')));
-
-//Routes
-app.use('/api/users', userRoute);
-app.use('/api/products', productRoute);
 
 //go to http://localhost:3000/api-docs/ to see the documentation when the server is running
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
