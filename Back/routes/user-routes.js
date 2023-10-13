@@ -34,7 +34,7 @@ module.exports = router;
  *         500:
  *          description: Internal server error
  * 
- *   api/user/register:
+ *   api/users/register:
  *     post:
  *       tags:
  *         - Users
@@ -60,7 +60,7 @@ module.exports = router;
  *         500: 
  *           description: Internal Server Error
  * 
- *   api/user/login:
+ *   api/users/login:
  *     post:
  *       tags:
  *         - Users
@@ -86,7 +86,7 @@ module.exports = router;
  *         500:
  *           description: Internal Server Error
  * 
- *   api/user/{id}:
+ *   api/users/{id}:
  *     patch:
  *       tags:
  *        - Users
