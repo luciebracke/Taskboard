@@ -10,16 +10,24 @@ try {
     
 }
 }
-const patchBoard = async (requestBody) => {
+const patchBoardState = async (requestBody,res) => {
     try{
         const board = await Board.findByIdAndUpdate(requestBody.id, requestBody.state);
         return board;
+    }catch(error){
+        throw new Error(error.message);
+    }
+}
 
-    }catch{
+const getAllBoard = async () => {
+    try{
+        const board = await Board.find();
+        return board;
+    }catch(error){
         throw new Error(error.message);
     }
 }
 
 module.exports = {
-    createBoard
+    createBoard,getAllBoard,patchBoardState
 };

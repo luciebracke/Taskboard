@@ -3,6 +3,7 @@ import PlusIcon from "../icons/PlusIcon";
 import { useMemo, useState } from "react";
 import { Column, Id, Task } from "../../types";
 import ColumnContainer from "./ColumnContainer";
+import { getBoards } from '../../api';
 import {
   DndContext,
   DragEndEvent,
@@ -16,6 +17,13 @@ import {
 import { SortableContext, arrayMove } from "@dnd-kit/sortable";
 import { createPortal } from "react-dom";
 import TaskCard from "./TaskCard";
+
+
+
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
+
+
 
 const defaultCols: Column[] = [
   {
@@ -110,7 +118,6 @@ function KabanBoard() {
   const [activeColumn, setActiveColumn] = useState<Column | null>(null);
 
   const [activeTask, setActiveTask] = useState<Task | null>(null);
-
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -118,6 +125,19 @@ function KabanBoard() {
       },
     })
   );
+  //  const queryClient = useQueryClient();
+
+    const { isLoading, isError, data, error } = useQuery(['boards'], getBoards);
+
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
+  if (isError) {
+    return <div>Error: {(error as Error).message}</div>
+  }
+  
+  console.log(data);
+
 
   return (
    
@@ -133,6 +153,7 @@ function KabanBoard() {
           px-[40px]
       "
       >
+       {/*  <div>{data}</div> */}
         <DndContext
           sensors={sensors}
           onDragStart={onDragStart}

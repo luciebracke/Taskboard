@@ -10,6 +10,7 @@ import { AuthProvider } from "react-auth-kit";
 import { Provider as StyletronProvider } from "styletron-react";
 import { Client as Styletron } from "styletron-engine-atomic";
 
+
 import {
   LightTheme,
   BaseProvider,
@@ -33,6 +34,7 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
+    
     <StyletronProvider value={engine}>
       <BaseProvider
         theme={DarkTheme}
@@ -54,6 +56,7 @@ root.render(
         </AuthProvider>
       </BaseProvider>
     </StyletronProvider>
+  
   </React.StrictMode>
 );
 
