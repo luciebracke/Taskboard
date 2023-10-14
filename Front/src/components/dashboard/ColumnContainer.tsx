@@ -10,7 +10,6 @@ interface Props {
   column: Column;
   deleteColumn: (id: Id) => void;
   updateColumn: (id: Id, title: string) => void;
-
   createTask: (columnId: Id) => void;
   updateTask: (id: Id, content: string) => void;
   deleteTask: (id: Id) => void;
@@ -88,7 +87,7 @@ function ColumnContainer({
   flex-col
   "
     >
-      {/* Titre des colonnes */}
+      {/* Column title */}
       <div
         {...attributes}
         {...listeners}
@@ -131,7 +130,7 @@ function ColumnContainer({
             <input
               className="bg-black focus:border-rose-500 border rounded outline-none px-2"
               value={column.title}
-             // onChange={(e) => updateColumn(column.id, e.target.value)}
+              onChange={(e) => updateColumn(column.id, e.target.value)}
               autoFocus
               onBlur={() => {
                 setEditMode(false);
@@ -160,7 +159,7 @@ function ColumnContainer({
         </button>
       </div>
 
-      {/* Conteneur de tâches */}
+      {/* Column task container */}
       <div className="flex flex-grow flex-col gap-4 p-2 overflow-x-hidden overflow-y-auto">
         <SortableContext items={tasksIds}>
           {tasks.map((task) => (
@@ -173,7 +172,7 @@ function ColumnContainer({
           ))}
         </SortableContext>
       </div>
-      {/* Footer colonnes */}
+      {/* Column footer */}
       <button
         className="flex gap-2 items-center border-columnBackgroundColor border-2 rounded-md p-4 border-x-columnBackgroundColor hover:bg-mainBackgroundColor hover:text-rose-500 active:bg-black"
         onClick={() => {
