@@ -14,7 +14,40 @@ const createBoard = async (req, res) => {
         console.log(error.message);
     }
 }
+const PatchBoard= async (req, res) => {
+    const { title, description, state, priority } = req.body;
+    const boardId = req.params.boardId;
 
+        try {
+            // Find the board by its ID
+            const board = await Board.findById(boardId);
+
+            // Check if the board exists
+            if (!board) {
+                return res.status(404).json({ error: 'Board not found' });
+            }
+
+            // Create a new task
+            const newTask = {
+                title: title,
+                description: description,
+                state: state,
+                priority: priority
+            };
+
+            // Add the new task to the board's task array
+            board.task.push(newTask);
+
+            // Save the board with the new task
+            await board.save();
+
+            return res.status(200).json(board); // Return the updated board with the new task
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+    
 const patchBoardState = async (req, res) => {
 
     let returnedResponse;
