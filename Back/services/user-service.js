@@ -27,7 +27,7 @@ const createUser = async (requestBody) => {
         }
 
         //checks if password has the correct length
-        if (password < 6) {
+        if (password.length < 6) {
             throw new Error('Password must have at least 6 characters!');
         }
 
@@ -58,7 +58,7 @@ const createUser = async (requestBody) => {
 const updateUser = async (req) => {
 
     try {
-       let user = User.findOneAndUpdate({_id: req.params.id}, req.body, { new: true });
+       let user = await User.findOneAndUpdate({_id: req.params.id}, req.body, { new: true });
        return user;
     }
     catch (error) {
@@ -73,8 +73,8 @@ const deleteUser = async (req) => {
 
     try {
 
-        let user = User.findByIdAndRemove(req.params.id);
-        return user;
+        let user = await User.findByIdAndRemove(req.params.id);
+        return `The user using the email ${user.email} has been deleted`;
     }
     catch (error) {
         throw new Error(error.message);

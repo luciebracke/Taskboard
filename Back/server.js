@@ -98,4 +98,8 @@ io.on('connection', (socket) => {
       });
 });
 
-server.listen(port, console.log(`Server running  on port ${port}`));
+const serverhttp =server.listen(port, console.log(`Server running  on port ${port}`));
+
+module.exports = app;
+// exports the app.listen for testing, necessary for preventing Jest from running indefinitely
+module.exports = serverhttp;
