@@ -36,4 +36,8 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 //go to http://localhost:3000/api-docs/ to see the documentation when the server is running
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 
-app.listen(port, console.log(`Server running in ${process.env.NODE_ENV} mode on port ${port}`));
+const server = app.listen(port, console.log(`Server running on port ${port}`));
+
+module.exports = app;
+// exports the app.listen for testing, necessary for preventing Jest from running indefinitely
+module.exports = server;

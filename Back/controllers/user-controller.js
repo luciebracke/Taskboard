@@ -37,7 +37,7 @@ const updateUser = async (req, res) => {
     
         try {
             returnedResponse = await userService.updateUser(req);
-            res.status(201).send(returnedResponse);
+            res.status(200).send(returnedResponse);
         } 
         catch (error) {
             res.status(400).send(error.message);
@@ -52,7 +52,7 @@ const deleteUser = async (req, res) => {
     
         try {
             returnedResponse = await userService.deleteUser(req);
-            res.status(201).send(returnedResponse);
+            res.status(200).send(returnedResponse);
         } 
         catch (error) {
             res.status(400).send(error.message);
