@@ -16,7 +16,7 @@ beforeEach(async () => {
 // Closing the server after all tests or jest will run indefinitely
 afterAll(() => {
   mongoose.connection.close();
-  serverhttp.close();
+  serverhttp.quit();
 });
 
 let idForTesting;
