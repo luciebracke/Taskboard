@@ -18,6 +18,10 @@ import { SortableContext, arrayMove } from "@dnd-kit/sortable";
 import { createPortal } from "react-dom";
 import TaskCard from "./TaskCard";
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import io,{ Socket } from 'socket.io-client';
+
+const socket = io('http://localhost:3001');
+
 const defaultCols: Column[] = [
   {
     id: "todo",
@@ -43,12 +47,12 @@ function KanbanBoard() {
   const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
 
   const [tasks, setTasks] = useState<Task[]>(defaultTasks);
-
+  const[boardID, setBoardID] = useState<string>(); //array of boards [
   const [activeColumn, setActiveColumn] = useState<Column | null>(null);
 
   const [activeTask, setActiveTask] = useState<Task | null>(null);
-  const { isLoading, isError, data, error } = useQuery(['boards'], getBoards);
-  console.log({ isLoading, isError, data, error });
+  const { isLoading, isError, data, error ,refetch} = useQuery(['boards'], getBoards);
+  console.log({ isLoading, isError, data, error ,});
  const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -56,21 +60,45 @@ function KanbanBoard() {
       },
     })
   );
+ 
+    // For example:
+    socket.emit('message', 'Hello, server!');
+
+    
 useEffect(() => {
   if (!isLoading && !isError && data) {
-    // Extract tasks array from data object
+    
     const extractedTasks: Task[] = data.flatMap((boardItem: any) =>
       boardItem.task.map((taskItem: any) => ({
         id: taskItem._id,
+        boardId: data[0]._id,
         columnId: taskItem.state,
         content: taskItem.description,
         priority: taskItem.priority,
-        // Add other properties as needed
+      
       }))
     );
+    setBoardID(data[0]._id);
     setTasks(extractedTasks);
   }
 }, [isLoading, isError, data]);
+useEffect(() => {
+  // Des actions vont être effectuées lorsqu'un événement sera reçu par socket du server
+  socket.on('taskCreated', (newTask) => {
+    //Refect la liste des taches
+    refetch();
+  });
+  socket.on('taskDeleted', (newTask) => {
+   //Refect la liste des taches
+    refetch();
+  });
+
+  return () => {
+    // Clean up the socket event listener when the component unmounts
+    socket.off('taskCreated');
+  };
+}, [refetch]);
+
 if (isLoading) {
   return <div>Loading...</div>
 }
@@ -78,7 +106,7 @@ if (isError) {
   return <div>Error: {(error as Error).message}</div>
 }
 
-  
+  console.log({tasks });
   return (
     <div
       className="
@@ -150,6 +178,7 @@ if (isError) {
                 createTask={createTask}
                 deleteTask={deleteTask}
                 updateTask={updateTask}
+               
                 tasks={tasks.filter(
                   (task) => task.columnId === activeColumn.id
                 )}
@@ -169,28 +198,23 @@ if (isError) {
     </div>
   );
 
-  function createTask(columnId: Id) {
-    /* const newTask: Task = {
-      id: generateId(),
-      columnId,
-      content: `Task ${tasks.length + 1}`,
-    };
+  function createTask(description:string,columnId: Id,) {
+    
+    //Faire une requete post pour ajouter une tache
+    socket.emit('createTask', boardID,description,columnId,'low');
+ }
 
-    setTasks([...tasks, newTask]); */
-  }
-
-  function deleteTask(id: Id) {
-   /*  const newTasks = tasks.filter((task) => task.id !== id);
-    setTasks(newTasks); */
+  function deleteTask(taskid: Id,boardid: Id) {
+   //make a delete request to the server with socket
+    socket.emit('deleteTask', boardid,taskid);
+    console.log("taskid : ",taskid ,"boardid : ",boardid);
+    const newTasks = tasks.filter((task) => task.id !== taskid);
+    return {...newTasks, tasks};
   }
 
   function updateTask(id: Id, content: string) {
-    const newTasks = tasks.map((task) => {
-      if (task.id !== id) return task;
-      return { ...task, content };
-    });
-
-    setTasks(newTasks);
+    console.log("boardID",boardID,"id : ",id ,"content : ",content);
+    socket.emit('updateTask', boardID,id,content);
   }
 
   function createNewColumn() {
@@ -252,7 +276,7 @@ if (isError) {
       const activeColumnIndex = columns.findIndex((col) => col.id === activeId);
 
       const overColumnIndex = columns.findIndex((col) => col.id === overId);
-
+      
       return arrayMove(columns, activeColumnIndex, overColumnIndex);
     });
   }
@@ -274,11 +298,11 @@ if (isError) {
     // Im dropping a Task over another Task
     if (isActiveATask && isOverATask) {
       setTasks((tasks) => {
-        const activeIndex = tasks.findIndex((t) => t.id === activeId);
-        const overIndex = tasks.findIndex((t) => t.id === overId);
+        const activeIndex = tasks.findIndex((tache) => tache.id === activeId);
+        const overIndex = tasks.findIndex((tache) => tache.id === overId);
 
         if (tasks[activeIndex].columnId != tasks[overIndex].columnId) {
-          // Fix introduced after video recording
+        
           tasks[activeIndex].columnId = tasks[overIndex].columnId;
           return arrayMove(tasks, activeIndex, overIndex - 1);
         }
@@ -289,10 +313,9 @@ if (isError) {
 
     const isOverAColumn = over.data.current?.type === "Column";
 
-    // Im dropping a Task over a column
     if (isActiveATask && isOverAColumn) {
       setTasks((tasks) => {
-        const activeIndex = tasks.findIndex((t) => t.id === activeId);
+        const activeIndex = tasks.findIndex((tache) => tache.id === activeId);
 
         tasks[activeIndex].columnId = overId;
         console.log("DROPPING TASK OVER COLUMN", { activeIndex });
@@ -302,9 +325,5 @@ if (isError) {
   }
 }
 
-function generateId() {
-  /* Generate a random number between 0 and 10000 */
-  return Math.floor(Math.random() * 10001);
-}
 
 export default KanbanBoard;

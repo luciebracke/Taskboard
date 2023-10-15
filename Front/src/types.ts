@@ -8,6 +8,7 @@ export type Column = {
 export type Task = {
   id: Id;
   columnId: Id;
+  boardId: Id;
   content: string;
   priority:string
 };

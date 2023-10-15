@@ -7,5 +7,5 @@ router
     .post('/createboard', boardController.createBoard)
     .get('/', boardController.getAllBoard)
     .patch('/patchboard/:id', boardController.patchBoardState)
-
+    .delete('/patchboard/:boardid/task/:taskid', boardController.deleteTask)
 module.exports = router;

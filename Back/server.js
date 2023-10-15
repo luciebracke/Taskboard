@@ -9,14 +9,23 @@ const boardRoutes = require('./routes/board-routes');
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUI = require('swagger-ui-express');
 const swaggerOptions = require('./config/swagger-config');
+const app = express();
+const http = require("http");
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const boardController = require('./controllers/board-controller');
 
-let corsOptions = {
-    origin: 'http://localhost:3001',
-};
+const io = new Server(server, {
+    cors: {
+        origin: "http://localhost:3000",
+      //Lie le serveur back au serveur front
+    }
+});
+
 
 connectDB();
 
-const app = express();
+
 
 const port = process.env.PORT || 3001;
 
@@ -32,8 +41,61 @@ app.use('/api/users', userRoutes);
 app.use('/api/board/', boardRoutes);
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
-
+app.get('/', (req, res) => {
+    res.send('<h1>Server BACK ONLINE</h1>');
+});
 //go to http://localhost:3000/api-docs/ to see the documentation when the server is running
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 
-app.listen(port, console.log(`Server running in ${process.env.NODE_ENV} mode on port ${port}`));
+io.on('connection', (socket) => {
+    console.log('a user connected');
+    socket.on('disconnect', () => {
+        console.log('user disconnected');});
+    socket.on('chat message', (msg) => {
+        console.log('message: ' + msg);
+        io.emit('chat message', msg);
+    });
+    //DELETE TASK
+    socket.on('deleteTask', async (boardid, taskid) => {
+        console.log('deleteTask: \n Board:' + boardid + '\n Task:' + taskid);
+    
+        try {
+          let deletedTask = await boardController.deleteTask({body:{ boardid, taskid} });
+          io.emit('taskDeleted', { boardid, taskid, deletedTask });
+        } catch (error) {
+
+          console.error('Error deleting task:', error);
+          socket.emit('deleteTaskError', { boardid, taskid, error: error.message });
+        }
+      });
+   //ADD TASK
+    socket.on('createTask', async (boardid,description,state,priority ) => {
+        console.log('addTask: \n Board:' + boardid + '\n Task:' + description,state,priority);
+    
+        try {
+          let newTask = await boardController.createtask({body:{ boardid,description,state,priority} });
+          io.emit('taskCreated', { boardid,description,state,priority,newTask });
+        } catch (error) {
+          
+          console.error('Error adding task:', error);
+          socket.emit('addTaskError', { boardid, error });
+        }
+      }); 
+    socket.on('message', (data) => {
+        console.log('Message from client:', data);
+      });
+      //UPDATE TASK
+      socket.on('updateTask', async (boardid, taskid, description) => {
+        console.log('updateTask: \n Board:' + boardid + '\n Task:' + taskid);
+    
+        try {
+          let updatedTask = await boardController.patchTask({body:{ boardid, taskid, description} });
+          io.emit('taskUpdated', { boardid, taskid, updatedTask });
+        } catch (error) {
+          console.error('Error updating task:', error);
+          socket.emit('updateTaskError', { boardid, taskid, error: error.message });
+        }
+      });
+});
+
+server.listen(port, console.log(`Server running  on port ${port}`));

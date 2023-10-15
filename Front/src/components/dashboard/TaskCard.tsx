@@ -6,13 +6,14 @@ import { CSS } from "@dnd-kit/utilities";
 
 interface Props {
   task: Task;
-  deleteTask: (id: Id) => void;
-  updateTask: (id: Id, content: string) => void;
+  deleteTask: (id: Id,boardid:Id) => void;
+  updateTask: (id: Id,description: string) => void;
 }
 
 function TaskCard({ task, deleteTask, updateTask }: Props) {
   const [mouseIsOver, setMouseIsOver] = useState(false);
   const [editMode, setEditMode] = useState(true);
+  const [text, setText] = useState(task.content);
 
   const {
     setNodeRef,
@@ -67,7 +68,7 @@ function TaskCard({ task, deleteTask, updateTask }: Props) {
         h-[90%]
         w-full resize-none border-none rounded bg-transparent text-white focus:outline-none
         "
-          value={task.content}
+          value={text}
           autoFocus
           placeholder="Rentrer une tâche"
           onBlur={toggleEditMode}
@@ -76,7 +77,7 @@ function TaskCard({ task, deleteTask, updateTask }: Props) {
               toggleEditMode();
             }
           }}
-          onChange={(e) => updateTask(task.id, e.target.value)}
+          onChange={(e) => {updateTask(task.id, e.target.value);setText(e.target.value)}}
         />
       
       </div>
@@ -105,7 +106,7 @@ function TaskCard({ task, deleteTask, updateTask }: Props) {
       {mouseIsOver && (
         <button
           onClick={() => {
-            deleteTask(task.id);
+            deleteTask(task.id,task.boardId);
           }}
           className="stroke-white absolute right-4 top-1/2 -translate-y-1/2 bg-columnBackgroundColor p-2 rounded opacity-60 hover:opacity-100"
         >

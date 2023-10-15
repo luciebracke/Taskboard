@@ -5,18 +5,21 @@ import { CSS } from "@dnd-kit/utilities";
 import { useMemo, useState } from "react";
 import PlusIcon from "../icons/PlusIcon";
 import TaskCard from "./TaskCard";
-
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import { IconButton,TextField } from '@mui/material';
 interface Props {
   column: Column;
+ 
   deleteColumn: (id: Id) => void;
   updateColumn: (id: Id, title: string) => void;
-  createTask: (columnId: Id) => void;
+  createTask: (description:string,columnId: Id) => void;
   updateTask: (id: Id, content: string) => void;
-  deleteTask: (id: Id) => void;
+  deleteTask: (id: Id,boardid:Id) => void;
   tasks: Task[];
 }
 
 function ColumnContainer({
+  
   column,
   deleteColumn,
   updateColumn,
@@ -30,7 +33,15 @@ function ColumnContainer({
   const tasksIds = useMemo(() => {
     return tasks.map((task) => task.id);
   }, [tasks]);
-
+  const [task_test, setTask_test] = useState("");
+  const handleAddTask = () => {
+   if(task_test === "") return;
+    //creer une tache
+    console.log("task_test : ",task_test);
+    createTask(task_test,column.id);
+   /*  socket.emit('createTask', column.id,task_test); */
+    setTask_test("");
+  };
   const {
     setNodeRef,
     attributes,
@@ -173,15 +184,17 @@ function ColumnContainer({
         </SortableContext>
       </div>
       {/* Column footer */}
-      <button
-        className="flex gap-2 items-center border-columnBackgroundColor border-2 rounded-md p-4 border-x-columnBackgroundColor hover:bg-mainBackgroundColor hover:text-rose-500 active:bg-black"
-        onClick={() => {
-          createTask(column.id);
-        }}
-      >
-        <PlusIcon />
-        Add task
-      </button>
+      
+       <TextField
+        id="standard-name"
+        variant="standard"
+        label="Ajouter une tâche"
+        value={task_test}
+        margin="dense"
+        color="error"
+        onChange={(e) => setTask_test(e.target.value)}
+        InputProps={{style: { color: 'white' },endAdornment: <IconButton onClick={handleAddTask}><AddCircleIcon sx={{fontSize:'large',color:'white'}}/></IconButton>}}
+      />
     </div>
   );
 }

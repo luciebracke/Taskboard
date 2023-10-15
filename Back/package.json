@@ -20,6 +20,7 @@
     "mongoose": "^7.6.1",
     "mongoose-unique-validator": "^4.0.0",
     "nodemon": "^3.0.1",
+    "socket.io": "^4.7.2",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0"
   }

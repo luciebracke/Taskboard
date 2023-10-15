@@ -7,47 +7,73 @@ const createBoard = async (req, res) => {
     console.log(req);
     try {
         returnedResponse = await boardService.createBoard(requestBody);
-        res.status(201).send(returnedResponse);
+        if(res){
+            return res.status(200).json(returnedResponse);}
     } 
     catch (error) {
-        res.status(400).send(error.message);
+        if(res){
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
         console.log(error.message);
     }
 }
-const PatchBoard= async (req, res) => {
-    const { title, description, state, priority } = req.body;
-    const boardId = req.params.boardId;
-
-        try {
-            // Find the board by its ID
-            const board = await Board.findById(boardId);
-
-            // Check if the board exists
-            if (!board) {
-                return res.status(404).json({ error: 'Board not found' });
-            }
-
-            // Create a new task
-            const newTask = {
-                title: title,
-                description: description,
-                state: state,
-                priority: priority
-            };
-
-            // Add the new task to the board's task array
-            board.task.push(newTask);
-
-            // Save the board with the new task
-            await board.save();
-
-            return res.status(200).json(board); // Return the updated board with the new task
-        } catch (error) {
-            console.error(error);
+const createtask = async (req, res) => {
+    let returnedResponse;
+    let requestBody = req.body;
+    console.log(req);
+    try {
+        returnedResponse = await boardService.createtask(requestBody);
+        if(res){
+            return res.status(200).json(returnedResponse);}
+        return returnedResponse;
+    } 
+    catch (error) {
+        if(res){
             return res.status(500).json({ error: 'Internal Server Error' });
         }
+       
+        console.log(error.message);
     }
-    
+}
+const patchTask= async (req, res) => {
+    let returnedResponse;
+    let requestBody = req.body;
+    console.log(req);
+    try {
+        returnedResponse = await boardService.patchTask(requestBody);
+        if(res){
+            return res.status(200).json(returnedResponse);}
+        return returnedResponse;
+    } 
+    catch (error) {
+        if(res){
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+       
+        console.log(error.message);
+    }
+}
+
+const deleteTask = async (req, res) => {
+    let returnedResponse;
+    let requestBody = req.body;
+
+    console.log(req);
+    try {
+        returnedResponse = await boardService.deleteTask(requestBody);
+        if (res) {
+            return res.status(200).json(returnedResponse);
+        }
+        console.log(returnedResponse);
+    } 
+    catch (error) {
+        if(res){
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+        console.log(error.message);
+    }
+
+};  
 const patchBoardState = async (req, res) => {
 
     let returnedResponse;
@@ -71,6 +97,7 @@ const getBoard = async (req, res) => {
         res.status(400).send(error.message);
     }
 }
+
 const getAllBoard = async (req, res) => {
     try{
         returnedResponse = await boardService.getAllBoard();
@@ -82,5 +109,5 @@ const getAllBoard = async (req, res) => {
 }
 
 module.exports = {
-    createBoard,getBoard,getAllBoard,patchBoardState
+    createBoard,getBoard,getAllBoard,patchBoardState,deleteTask,patchTask,createtask
 }
