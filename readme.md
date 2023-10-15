@@ -1,9 +1,24 @@
 
 # TaskMaster
 
-A brief description of what this project does and who it's for
+Projet TaskMaster KanbanBoard
 
+Fonctionnalité :
+  - Créer un utlisateur (back)
+  - Drag&Drop taches
+  - Création/update/suppr de tache par socket.io/react-query
 
+Stack:
+  - React ts 
+  - Node js Express
+  - Tailwind
+  - React Auth
+  - Drag&Drop
+
+  - Swagger
+  - Jest
+  
+ 
 ## Run Environnement Local
 
 
@@ -28,9 +43,10 @@ Le Front servi sur 3000
   npm i
   npm run dev
 ```
-
-
-
+Le Swagger servi sur 
+ ```
+ http//:localhost:3001/api-docs
+ ```
 
 ## Running Tests
 
