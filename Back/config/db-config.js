@@ -1,4 +1,6 @@
+require('dotenv').config()
+
 module.exports = {
     secret: 'the most secret key ever',
-    database: 'mongodb+srv://lionelabatan:TaskBoard123@taskboard.0fdyvlu.mongodb.net/?retryWrites=true&w=majority',
+    database: process.env.MONGODB_URI
 }
